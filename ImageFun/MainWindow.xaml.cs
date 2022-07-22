@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace ImageFun
 {
@@ -13,22 +12,39 @@ namespace ImageFun
         public MainWindow()
         {
             InitializeComponent();
-            FocusHelper focusHelper = new FocusHelper();
-            (double, BitmapImage)[] data = focusHelper.ScoreImages($@"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}\Dev\");
+            LoadImages();
+        }
+
+        private void LoadImages()
+        {
+            ImageHelper imageHelper = new ImageHelper();
+            ActiveImage[] activeImages = imageHelper.LoadImages($@"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}\Dev2\");
             for (int i = 0; i < 5; i++)
-            {
                 for (int j = 0; j < 5; j++)
                 {
                     Image image = new Image()
                     {
                         Margin = new Thickness(5),
                         Stretch = System.Windows.Media.Stretch.Fill,
-                        Source = data[(i * 5) + j].Item2,
+                        Source = activeImages[(i * 5) + j].BitmapImage,
+                        Tag = "0",
                     };
+                    image.MouseUp += Image_MouseUp;
                     mainGrid.Children.Add(image);
                     Grid.SetRow(image, i);
                     Grid.SetColumn(image, j);
                 }
+        }
+
+        private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Image image = sender as Image;
+            if (image.Tag.ToString() == "0")
+            {
+                Focus focus = new Focus(ImageHelper.ToBitmap((System.Windows.Media.Imaging.BitmapImage)image.Source));
+                focus.ScoreImageGrid();
+                focus.HighlightTiles();
+                image.Source = ImageHelper.ToBitmapImage(focus.ScaledImage);
             }
         }
     }
