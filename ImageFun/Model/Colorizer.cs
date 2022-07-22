@@ -11,7 +11,7 @@ namespace ImageFun
             return Color.FromArgb(c.R, c.G, c.B);
         }
 
-        private static double Map(double v, double fL = 0, double fH = 1, double tL = 0.5, double tH = 0.75) => (double)((v - fL) * (tH - tL) / (fH - fL)) + tL;
+        private static double Map(double v, double fL = -3, double fH = 3, double tL = 0, double tH = 1) => (double)((v - fL) * (tH - tL) / (fH - fL)) + tL;
 
         public struct ColorRGB
         {

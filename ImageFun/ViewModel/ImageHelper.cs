@@ -9,7 +9,7 @@ namespace ImageFun
 {
     internal class ImageHelper
     {
-        public ActiveImage[] LoadImages(string path)
+        public static ActiveImage[] LoadImages(string path)
         {
             string[] images = Directory.GetFiles(path).Where(x => x.EndsWith(".jpg")).ToArray();
             List<ActiveImage> activeImages = new List<ActiveImage>();

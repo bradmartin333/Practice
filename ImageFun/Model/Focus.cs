@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -7,17 +8,24 @@ namespace ImageFun
 {
     internal class Focus
     {
+        public string ElapsedTime;
         public Bitmap ScaledImage;
         private int ScanSize, Width, Height;
         private const double ImageScaling = 0.2;
-        private const int GridSize = 15; // N x N grid
-        private const double DataPercentage = 0.1; // Highest 10% of available data from training grid
+        private const int GridSize = 20; // N x N grid
+        private const double DataPercentage = 0.2; // Highest % of available data from training grid
         private int[] Tiles;
         private double[] Scores;
 
         public Focus(Bitmap bmp)
         {
             ScaledImage = new Bitmap(bmp, new Size((int)Math.Round(bmp.Width * ImageScaling), (int)Math.Round(bmp.Height * ImageScaling)));
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            ScoreImageGrid();
+            stopwatch.Stop();
+            ElapsedTime = $"{Math.Round((decimal)stopwatch.ElapsedMilliseconds, 3)} ms";
+            HighlightTiles();
         }
 
         /// Handy tool used as a method
@@ -28,7 +36,7 @@ namespace ImageFun
         }
 
         // Gets grid pixels and then scores the image
-        public double ScoreImageFocus(Bitmap img)
+        private double ScoreImageFocus(Bitmap img)
         {
             ScanSize = (int)Math.Ceiling((Math.Min(img.Height, img.Width) * (1.0 / GridSize)));
             Width = img.Width / ScanSize;
@@ -74,7 +82,7 @@ namespace ImageFun
         /// <param name="img"></param>
         /// <param name="tiles"></param>
         /// <returns></returns>
-        public double ScoreImageGrid()
+        private double ScoreImageGrid()
         {
             Tiles = GetTiles();
             Scores = new double[Tiles.Length];
@@ -103,7 +111,7 @@ namespace ImageFun
         }
 
         // Returns the tiles within a grid that have entropies in the highest 2 histogram bins
-        public int[] GetTiles()
+        private int[] GetTiles()
         {
             int tileScanSize = (int)(Math.Min(ScaledImage.Height, ScaledImage.Width) * (1.0 / GridSize));
             Dictionary<int, double> entropyDict = new Dictionary<int, double>();
@@ -130,7 +138,7 @@ namespace ImageFun
         /// <summary>
         /// Colorize with the grid layout of the grid training image
         /// </summary>
-        public void HighlightTiles()
+        private void HighlightTiles()
         {
             int tileScanSize = (int)(Math.Min(ScaledImage.Height, ScaledImage.Width) * (1.0 / GridSize));
             int tileIDX = 0;
@@ -155,7 +163,7 @@ namespace ImageFun
         /// <returns>
         /// Calculated Entropy
         /// </returns>
-        public static double Entropy(List<double> redPixels)
+        private static double Entropy(List<double> redPixels)
         {
             Dictionary<double, double> dictionary = new Dictionary<double, double>();
             int num = 0;
