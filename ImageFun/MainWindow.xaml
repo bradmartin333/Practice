@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageFun"
         mc:Ignorable="d"
-        Title="Image Fun" Height="1000" Width="1000">
+        Title="Image Fun" Height="800" Width="800">
     <Grid x:Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

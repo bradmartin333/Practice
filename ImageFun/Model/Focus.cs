@@ -13,6 +13,7 @@ namespace ImageFun
         private const int GridSize = 15; // N x N grid
         private const double DataPercentage = 0.1; // Highest 10% of available data from training grid
         private int[] Tiles;
+        private double[] Scores;
 
         public Focus(Bitmap bmp)
         {
@@ -76,6 +77,7 @@ namespace ImageFun
         public double ScoreImageGrid()
         {
             Tiles = GetTiles();
+            Scores = new double[Tiles.Length];
             int tileScanSize = (int)(Math.Min(ScaledImage.Height, ScaledImage.Width) * (1.0 / GridSize));
             int tileIDX = 0;
             List<double> scores = new List<double>();
@@ -88,6 +90,7 @@ namespace ImageFun
                         Bitmap tile = new Bitmap(tileScanSize, tileScanSize);
                         BitmapCrop(new Rectangle(i, j, tileScanSize, tileScanSize), ScaledImage, ref tile);
                         scores.Add(ScoreImageFocus(tile));
+                        Scores[Tiles.ToList().IndexOf(tileIDX)] = scores.Last();
                     }
                     tileIDX++;
 
@@ -136,7 +139,9 @@ namespace ImageFun
                 for (int j = 0; j < ScaledImage.Height; j += tileScanSize)
                 {
                     if (Tiles.Contains(tileIDX))
-                        g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Green)), new Rectangle(i, j, tileScanSize, tileScanSize));
+                        g.FillRectangle(
+                            new SolidBrush(Color.FromArgb(150, Colorizer.GetScoreColor(Scores[Tiles.ToList().IndexOf(tileIDX)]))), 
+                            new Rectangle(i, j, tileScanSize, tileScanSize));
                     tileIDX++;
                 }
         }
