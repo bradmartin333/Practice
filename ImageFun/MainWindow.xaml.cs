@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -13,7 +14,7 @@ namespace ImageFun
         {
             InitializeComponent();
             FocusHelper focusHelper = new FocusHelper();
-            (double, BitmapImage)[] data = focusHelper.ScoreImages(@"C:\Users\bmartin\Pictures\1085");
+            (double, BitmapImage)[] data = focusHelper.ScoreImages($@"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}\Dev\");
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 5; j++)
