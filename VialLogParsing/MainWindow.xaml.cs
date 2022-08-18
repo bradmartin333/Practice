@@ -42,10 +42,11 @@ namespace VialLogParsing
         {
             foreach (FileInfo file in Files)
             {
+                string name = file.Name.Replace(file.Extension, "");
                 string[] data = File.ReadAllLines(file.FullName);
                 foreach (string line in data)
                 {
-                    DataEntry dataEntry = new DataEntry(file.Name, line);
+                    DataEntry dataEntry = new DataEntry(name, line);
                     if (dataEntry.Valid)
                         Data.Add(dataEntry);
                     else
@@ -103,7 +104,7 @@ namespace VialLogParsing
             FlowDocument doc = new FlowDocument();
             Paragraph par = new Paragraph();
 
-            par.Inlines.Add("Index\tStart   \tStop    \tDuration (s)\n");
+            par.Inlines.Add("Index\tStart\t\tStop\t\tDuration (s)\tName\n");
 
             for (int i = 0; i < Presences.Count; i++)
             {
@@ -111,7 +112,8 @@ namespace VialLogParsing
                     $"{i+1}\t" +
                     $"{Presences[i].Start:HH:mm:ss}\t" +
                     $"{Presences[i].End:HH:mm:ss}\t" +
-                    $"{Presences[i].Duration.TotalSeconds}\n");
+                    $"{Presences[i].Duration.TotalSeconds}\t\t" +
+                    $"{Presences[i].Name}\n");
             }
 
             doc.Blocks.Add(par);
